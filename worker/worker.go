@@ -16,7 +16,7 @@ import (
 )
 
 // NewDefaultWorker returns a new configured DefaultWorker instance.
-func NewDefaultWorker(conf config.Worker, taskID string) (Worker, error) {
+func NewDefaultWorker(conf config.Worker, taskID string) (*DefaultWorker, error) {
 	var err error
 	var reader TaskReader
 	var writer events.Writer
@@ -48,6 +48,8 @@ func NewDefaultWorker(conf config.Worker, taskID string) (Worker, error) {
 			writer = events.NewLogger("worker")
 		case "rpc":
 			writer, err = events.NewRPCWriter(conf)
+		case "kafka":
+			writer, err = events.NewKafkaWriter(conf.EventWriters.Kafka)
 		default:
 			err = fmt.Errorf("unknown EventWriter")
 		}
@@ -75,6 +77,10 @@ type DefaultWorker struct {
 	Store      storage.Storage
 	TaskReader TaskReader
 	Event      *events.TaskWriter
+}
+
+func (d *DefaultWorker) Close() error {
+	return d.Event.Close()
 }
 
 // Run runs the Worker.

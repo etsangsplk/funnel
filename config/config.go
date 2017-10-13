@@ -126,6 +126,8 @@ func DefaultConfig() Config {
 	c.Worker.EventWriters.RPC.UpdateTimeout = time.Second
 	c.Worker.EventWriters.DynamoDB.TableBasename = "funnel"
 
+	c.Worker.EventWriters.Kafka.Topic = "funnel"
+
 	htcondorTemplate, _ := Asset("config/htcondor-template.txt")
 	slurmTemplate, _ := Asset("config/slurm-template.txt")
 	pbsTemplate, _ := Asset("config/pbs-template.txt")
@@ -253,7 +255,13 @@ type Worker struct {
 			UpdateTimeout time.Duration
 		}
 		DynamoDB DynamoDB
+		Kafka    Kafka
 	}
+}
+
+type Kafka struct {
+	Servers []string
+	Topic   string
 }
 
 // DynamoDB describes the configuration for Amazon DynamoDB backed processes

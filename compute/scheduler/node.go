@@ -6,7 +6,6 @@ import (
 	"github.com/ohsu-comp-bio/funnel/logger"
 	pbs "github.com/ohsu-comp-bio/funnel/proto/scheduler"
 	"github.com/ohsu-comp-bio/funnel/util"
-	"github.com/ohsu-comp-bio/funnel/worker"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"time"
@@ -42,7 +41,7 @@ func NewNode(conf config.Config) (*Node, error) {
 		client:     cli,
 		log:        log,
 		resources:  res,
-		newWorker:  worker.NewDefaultWorker,
+		newWorker:  DefaultWorkerFactory,
 		workers:    newRunSet(),
 		timeout:    timeout,
 		state:      state,
